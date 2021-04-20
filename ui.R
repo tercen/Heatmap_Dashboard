@@ -23,34 +23,45 @@ cp1 <- conditionalPanel(
         
     )
   ))
-  
-  ui = shinyUI
-  ( 
-    fluidPage
-    ( 
-      
-      ui <- dashboardPage
-      (
-        dashboardHeader(title = "Heatmap Plus"),
-        dashboardSidebar(
-          sidebarMenu(id = "side",
-                      menuItem("Home", tabName = "home", icon = icon("home")),
-                      menuItem("Rows & Columns", tabName = "axo", icon = icon("sort")),
-                      menuItem("Axis annotation", tabName = "axann", icon = icon("th")),
-                      menuItem("Palette", tabName = "palette", icon = icon("palette"))
-                      
-          )
-        )
-        ,
-        dashboardBody(
-          fluidRow(cp1),
-          plotOutput("heatmap",height = "600px")
-          
-          
-        )
-      ),
-      shinyjs::useShinyjs()
-      
+
+cp2 <- conditionalPanel(
+  condition = "input.side == 'axann'",
+  fluidRow(
+    box(width = 4,
+        selectInput("xannotation", label = "Column Annotation",choices = "", multiple = TRUE)
+    ),
+    box(width = 4,
+        selectInput("yannotation", label = "Row Annotation", choices = "", multiple = TRUE)
     )
   )
-  
+)
+
+ui = shinyUI
+( 
+  fluidPage
+  ( 
+    
+    ui <- dashboardPage
+    (
+      dashboardHeader(title = "Heatmap Plus"),
+      dashboardSidebar(
+        sidebarMenu(id = "side",
+                    menuItem("Home", tabName = "home", icon = icon("home")),
+                    menuItem("Rows & Columns", tabName = "axo", icon = icon("sort")),
+                    menuItem("Axis annotation", tabName = "axann", icon = icon("th")),
+                    menuItem("Palette", tabName = "palette", icon = icon("palette"))
+                    
+        )
+      )
+      ,
+      dashboardBody(
+        fluidRow(cp1, cp2),
+        plotOutput("heatmap",height = "600px")
+        
+        
+      )
+    ),
+    shinyjs::useShinyjs()
+    
+  )
+)
