@@ -3,6 +3,8 @@ library(tercen)
 library(tidyverse)
 library(ComplexHeatmap)
 library(reshape2)
+library(matlab)
+library(viridisLite)
 
 ############################################
 #### This part should not be modified
@@ -34,6 +36,12 @@ server <- shinyServer(function(input, output, session) {
   })
   
   
+  xLim = reactive({
+    q = getProps(session)
+    dataIn() %>%
+      summarise(xMin = quantile(.y, q[1]), xMax = quantile(.y, q[2]))
+  })
+  
   
   observe({
     
@@ -44,6 +52,12 @@ server <- shinyServer(function(input, output, session) {
     updateSelectInput(session, "xannotation", choices = colnames(cdf))
     updateSelectInput(session, "rowlab", choices = colnames(rdf), selected = colnames(rdf)[length(colnames(rdf))])
     updateSelectInput(session, "yannotation", choices = colnames(rdf))
+    
+    lim = xLim()
+    updateNumericInput(session, "dvmin", value = as.numeric(lim$xMin))
+    updateNumericInput(session, "dvmax", value = as.numeric(lim$xMax))
+    updateNumericInput(session, "csmin", value = as.numeric(lim$xMin))
+    updateNumericInput(session, "csmax", value = as.numeric(lim$xMax))
     
     colAnnotation = reactive({
       if (!is.null(input$xannotation)){
@@ -56,6 +70,8 @@ server <- shinyServer(function(input, output, session) {
       haCol
     })
     
+    
+    
     rowAnn = reactive({
       if (!is.null(input$yannotation)){
         haRow = rdf %>%
@@ -66,6 +82,19 @@ server <- shinyServer(function(input, output, session) {
         haRow  = NULL
       }
       haRow
+    })
+    
+    colorPalette = reactive({
+      
+      if(input$paltype == "Divergent"){
+        cp = circlize::colorRamp2(breaks = c(input$dvmin, input$dvmid, input$dvmax),
+                                  colors = c(input$dcmin, input$dcmid, input$dcmax))
+      } else if (input$paltype == "Continuous"){
+        clr = cmaps(input$cmap)
+        breaks = seq(input$csmin, input$csmax, length.out = length(clr))
+        cp = circlize::colorRamp2(breaks = breaks, colors = clr)
+      }
+      cp
     })
     
     output$heatmap = renderPlot({
@@ -84,9 +113,6 @@ server <- shinyServer(function(input, output, session) {
       }
       
       
-      
-      
-      
       hm = Heatmap(X, 
                    cluster_columns = input$clusterx,
                    cluster_rows = input$clustery,
@@ -94,7 +120,8 @@ server <- shinyServer(function(input, output, session) {
                    column_names_gp = gpar(fontsize = input$clsize),
                    show_row_names = input$dorlab,
                    row_names_gp = gpar(fontsize = input$rlsize),
-                   top_annotation = colAnnotation())
+                   top_annotation = colAnnotation(),
+                   col = colorPalette())
       
       hm = hm + rowAnn()
       
@@ -125,6 +152,21 @@ getRows <- function(session){
 getCols = function(session){
   ctx <- getCtx(session)
   ctx %>% cselect()
+}
+
+getProps = function(session){
+  ctx = getCtx(session)
+  q = as.numeric(c(ctx$op.value("qMin"), ctx$op.value("qMax")))
+  q = c(0.01, 0.99)
+}
+  
+cmaps = function(type, n = 64){
+  if(type == "viridis"){
+    c = viridisLite::viridis(n)
+  } else if (type == "jet"){
+    c = matlab::jet.colors(n)
+  }
+  return(c)
 }
 
 

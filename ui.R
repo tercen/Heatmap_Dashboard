@@ -1,6 +1,8 @@
 library(shiny)
 library(shinydashboard)
 library(shinyjs)
+library(colourpicker)
+
 cp1 <- conditionalPanel(
   condition = "input.side == 'axo'",
   fluidRow(
@@ -36,6 +38,40 @@ cp2 <- conditionalPanel(
   )
 )
 
+cpcp = conditionalPanel(
+  condition = "input.paltype == 'Divergent'",
+  fluidRow(
+    box(width = 2, numericInput("dvmax", label = "Max", value = 1),
+        numericInput("dvmid", label = "Mid", value = 0),
+        numericInput("dvmin", label = "Min", value = -1)),
+    box(width = 1, colourInput("dcmax", label = "", value = "#7a040e", showColour = "background"),
+        colourInput("dcmid", label = "", value = "#dce37d", showColour = "background"),
+        colourInput("dcmin", label = "", value = "#04035e", showColour = "background")
+        )
+  )
+)
+
+cpcs = conditionalPanel(
+  condition = "input.paltype == 'Continuous'",
+  fluidRow(
+    box(width = 2, 
+        selectInput("cmap", label = "Scale", choices = c("viridis", "jet")),
+        numericInput("csmin", label = "Mid", value = 0),
+        numericInput("csmax", label = "Min", value = 1))
+  )
+)
+
+cp3 <- conditionalPanel(
+  condition = "input.side == 'palette'",
+  fluidRow(
+    box(width = 3,
+        selectInput("paltype", label = "Palette type",choices = c("Divergent", "Continuous"))
+    ),
+    cpcp,
+    cpcs
+  )
+)
+
 ui = shinyUI
 ( 
   fluidPage
@@ -43,7 +79,7 @@ ui = shinyUI
     
     ui <- dashboardPage
     (
-      dashboardHeader(title = "Heatmap Plus"),
+      dashboardHeader(title = "Heatmap Dash"),
       dashboardSidebar(
         sidebarMenu(id = "side",
                     menuItem("Home", tabName = "home", icon = icon("home")),
@@ -55,7 +91,7 @@ ui = shinyUI
       )
       ,
       dashboardBody(
-        fluidRow(cp1, cp2),
+        fluidRow(cp1, cp2, cp3),
         plotOutput("heatmap",height = "600px")
         
         

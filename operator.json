@@ -3,5 +3,21 @@
   "description": "Template to create a Shiny operator in Tercen.",
   "tags": ["template"],
   "authors": ["tercen"],
-  "urls": ["https://github.com/tercen/template_shiny_operator"]
+  "urls": ["https://github.com/tercen/template_shiny_operator"],
+
+  "properties": [
+
+    {
+    "kind": "DoubleProperty",
+    "name": "qMin",
+    "defaultValue": 0.01,
+    "description": "Quantile for default lower scale limit"
+    },
+    {
+    "kind": "DoubleProperty",
+    "name": "qMax",
+    "defaultValue": 0.99,
+    "description": "Quantile for default upper scale limit"
+    }  
+  ]
 }
