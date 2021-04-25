@@ -9,7 +9,7 @@ library(tidyr)
 source("ui.R")
 source("server.R")
 
-options("tercen.workflowId"= "3a85f3a46cd4009b31373508220064f2")
-options("tercen.stepId"= "86799058-7709-4ec3-adc5-41a4ac6e3c11")
+options("tercen.workflowId"= "43f6de57a8befbf60bbcb444f30062e0")
+options("tercen.stepId"= "8d2005ed-1a75-456e-bb49-870b91fadfb3")
 
 runApp(shinyApp(ui, server))  

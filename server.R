@@ -42,7 +42,6 @@ server <- shinyServer(function(input, output, session) {
       summarise(xMin = quantile(.y, q[1]), xMax = quantile(.y, q[2]))
   })
   
-  
   observe({
     
     cdf = colData() %>% as.data.frame()
@@ -110,10 +109,8 @@ server <- shinyServer(function(input, output, session) {
         rownames(X) = rlab$str
       }
       
-      
-      
       if (input$clusterx == "sort"){
-        xOrder = order(apply(X,2,mean(na.rm = TRUE)))
+        xOrder = order(apply(X,2,mean))
         X = X[, xOrder]
       } else if (input$clusterx == "correlate"){
         if (is.null(rowAnn())){
@@ -121,7 +118,7 @@ server <- shinyServer(function(input, output, session) {
         }
         df.row = rdf %>%
           select(vRow = all_of(input$yannotation[1]))
-
+        
         xOrder = order(apply(X,2, function(x) cor(x, y = df.row$vRow %>% as.factor() %>% as.numeric())))
         X = X[, xOrder]
       }
@@ -157,13 +154,9 @@ server <- shinyServer(function(input, output, session) {
       
       hm = hm + rowAnn()
       draw(hm)
+    })
   })
-    
-    
-  })
-  
 })
-
 
 getValues <- function(session){
   ctx <- getCtx(session)
@@ -183,13 +176,24 @@ getCols = function(session){
 
 getProps = function(session){
   ctx = getCtx(session)
-  q = as.numeric(c(ctx$op.value("qMin"), ctx$op.value("qMax")))
-  #q = c(0.01, 0.99)
+  if(!is.null(ctx$op.value("qMin"))){
+    qMin = ctx$op.value("qMin") %>% as.numeric()
+  }
+  else{
+    qMin = 0.01
+  }
+  if(!is.null(ctx$op.value("qMax"))){
+    qMax = ctx$op.value("qMax") %>% as.numeric()
+  }
+  else{
+    qMax = 0.99
+  }
+  q = c(qMin, qMax)
 }
 
 cmaps = function(type, n = 64){
   if(type == "viridis"){
-    c = viridisLite::viridis(n)
+    c = viridisLite::viridis(n) 
   } else if (type == "jet"){
     c = matlab::jet.colors(n)
   }

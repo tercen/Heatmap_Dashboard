@@ -55,9 +55,9 @@ cpcs = conditionalPanel(
   condition = "input.paltype == 'Continuous'",
   fluidRow(
     box(width = 2, 
-        selectInput("cmap", label = "Scale", choices = c("viridis", "jet")),
-        numericInput("csmin", label = "Mid", value = 0),
-        numericInput("csmax", label = "Min", value = 1))
+        selectInput("cmap", label = "Scale name", choices = c("viridis", "jet")),
+        numericInput("csmax", label = "Max", value = 1),
+        numericInput("csmin", label = "Min", value = 0))
   )
 )
 
@@ -65,7 +65,7 @@ cp3 <- conditionalPanel(
   condition = "input.side == 'palette'",
   fluidRow(
     box(width = 3,
-        selectInput("paltype", label = "Palette type",choices = c("Divergent", "Continuous"))
+        selectInput("paltype", label = "Palette type",choices = c("Divergent", "Continuous"), selected  = "Continuous")
     ),
     cpcp,
     cpcs
