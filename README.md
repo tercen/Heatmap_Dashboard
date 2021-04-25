@@ -2,18 +2,15 @@
 
 ##### Description
 
-The `Template Shiny operator` is a template repository for the creation of Shiny operators in Tercen.
+The `Heatmap Dashboard` is a Tercen Shiny Operator for an interactive heatmap representation of a cross tab view.
 
 ##### Usage
 
 Input projection|.
 ---|---
-`x-axis`        | type, description 
-`y-axis`        | type, description 
-`row`           | type, description 
-`column`        | type, description 
-`colors`        | type, description 
-`labels`        | type, description 
+`row`           
+`column`         
+`value`         
 
 Output relations|.
 ---|---
@@ -21,7 +18,6 @@ Output relations|.
 
 ##### Details
 
-Details on the computation.
 
 ##### See Also
 
