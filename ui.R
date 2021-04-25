@@ -7,7 +7,7 @@ cp1 <- conditionalPanel(
   condition = "input.side == 'axo'",
   fluidRow(
     box(width = 4,
-        checkboxInput("clusterx", label = "cluster columns", value = FALSE),
+        selectInput("clusterx",label = "column order", choices = c("cluster", "native", "sort", "correlate")),
         checkboxInput("doclab", label = "columns labels", value = TRUE),
         conditionalPanel(condition = "input.doclab == 1",
                          selectInput("columnlab", label = "", choices = ""),
@@ -16,7 +16,7 @@ cp1 <- conditionalPanel(
     )
     ,
     box(width = 4,
-        checkboxInput("clustery", label = "cluster rows", value = FALSE),
+        selectInput("clustery", label = "row order", choices = c("cluster", "native", "sort", "correlate")),
         checkboxInput("dorlab", label = "row labels", value = TRUE),
         conditionalPanel(condition = "input.dorlab == 1",
                          selectInput("rowlab", label = "", choices = ""),

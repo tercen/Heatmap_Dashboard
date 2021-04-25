@@ -70,8 +70,6 @@ server <- shinyServer(function(input, output, session) {
       haCol
     })
     
-    
-    
     rowAnn = reactive({
       if (!is.null(input$yannotation)){
         haRow = rdf %>%
@@ -97,7 +95,7 @@ server <- shinyServer(function(input, output, session) {
       cp
     })
     
-    output$heatmap = renderPlot({
+    Xsorted = reactive({
       X = dataIn() %>%
         acast(.ri ~ .ci , value.var = ".y")
       
@@ -113,9 +111,43 @@ server <- shinyServer(function(input, output, session) {
       }
       
       
-      hm = Heatmap(X, 
-                   cluster_columns = input$clusterx,
-                   cluster_rows = input$clustery,
+      
+      if (input$clusterx == "sort"){
+        xOrder = order(apply(X,2,mean(na.rm = TRUE)))
+        X = X[, xOrder]
+      } else if (input$clusterx == "correlate"){
+        if (is.null(rowAnn())){
+          stop("A row annotation is required when using correlate as ordering method for columns.")
+        }
+        df.row = rdf %>%
+          select(vRow = all_of(input$yannotation[1]))
+
+        xOrder = order(apply(X,2, function(x) cor(x, y = df.row$vRow %>% as.factor() %>% as.numeric())))
+        X = X[, xOrder]
+      }
+      
+      if (input$clustery == "sort"){
+        yOrder = order(apply(X,1,mean))
+        X = X[yOrder,]
+      } else if (input$clustery == "correlate"){
+        if(is.null(colAnnotation())){
+          stop("A column annotation is required when using correlate as ordering method for rows.")
+        }
+        df.col = cdf %>%
+          select(vCol = all_of(input$xannotation[1]))
+        
+        yOrder = order(apply(X,1, function(x) cor(x, y = df.row$vCol %>% as.factor() %>% as.numeric())))
+        X = X[yOrder,]
+        
+      }
+      
+      return(X)
+    })
+    
+    output$heatmap = renderPlot({     
+      hm = Heatmap(Xsorted(), 
+                   cluster_columns = input$clusterx == "cluster",
+                   cluster_rows = input$clustery == "cluster",
                    show_column_names = input$doclab,
                    column_names_gp = gpar(fontsize = input$clsize),
                    show_row_names = input$dorlab,
@@ -124,13 +156,8 @@ server <- shinyServer(function(input, output, session) {
                    col = colorPalette())
       
       hm = hm + rowAnn()
-      
-      
-      
-      
-      
       draw(hm)
-    })
+  })
     
     
   })
@@ -157,9 +184,9 @@ getCols = function(session){
 getProps = function(session){
   ctx = getCtx(session)
   q = as.numeric(c(ctx$op.value("qMin"), ctx$op.value("qMax")))
-  q = c(0.01, 0.99)
+  #q = c(0.01, 0.99)
 }
-  
+
 cmaps = function(type, n = 64){
   if(type == "viridis"){
     c = viridisLite::viridis(n)

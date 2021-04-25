@@ -29,7 +29,7 @@
     ]
   },
   "Bioconductor": {
-    "Version": null
+    "Version": "3.8"
   },
   "Packages": {
     "BH": {
