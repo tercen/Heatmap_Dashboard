@@ -24,4 +24,4 @@ Output relations|.
 
 
 ##### See Also
- The `Heatmap Dashboard`operator implements functionality of the R-package [ComplexHeatmap](https://www.bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html
+ The `Heatmap Dashboard`operator implements functionality of the R-package [ComplexHeatmap](https://www.bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html)
