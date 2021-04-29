@@ -12,7 +12,7 @@ Including:
 
 Input projection|.
 ---|---
-`row`  | Factors(s) defining the ros of the heatmap         
+`row`  | Factors(s) defining the rows of the heatmap         
 `column` | Factors(s) defining the columns of the heatmap      
 `value`  | values to represent in the heatmap    
 
