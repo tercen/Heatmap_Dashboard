@@ -109,6 +109,7 @@ server <- shinyServer(function(input, output, session) {
         rownames(X) = rlab$str
       }
       
+      xOrder <- yOrder <- NULL
       if (input$clusterx == "sort"){
         xOrder = order(apply(X,2,mean))
         X = X[, xOrder]
@@ -138,11 +139,11 @@ server <- shinyServer(function(input, output, session) {
         
       }
       
-      return(X)
+      return(list(X = X, xorder = xOrder, yorder = yOrder))
     })
     
-    output$heatmap = renderPlot({     
-      hm = Heatmap(Xsorted(), 
+    output$heatmap = renderPlot({
+      hm = Heatmap(Xsorted()$X, 
                    cluster_columns = input$clusterx == "cluster",
                    cluster_rows = input$clustery == "cluster",
                    show_column_names = input$doclab,
@@ -154,6 +155,16 @@ server <- shinyServer(function(input, output, session) {
       
       hm = hm + rowAnn()
       draw(hm)
+    })
+
+    observeEvent(input$button, {
+      shinyjs::disable("button")
+      
+      ctx  <- getCtx(session)
+      data <- getReturnData(session, Xsorted())
+      if (!is.null(data)) {
+        data %>% ctx$save()
+      }
     })
   })
 })
@@ -200,6 +211,36 @@ cmaps = function(type, n = 64){
   return(c)
 }
 
+getReturnData <- function(session, sorted_data) {
+  result  <- NULL
+  ctx     <- getCtx(session)
+  corder0 <- sorted_data$xorder 
+  rorder0 <- sorted_data$yorder
+  
+  if (!is.null(corder0) && !is.null(rorder0)) {
+    ci <- seq(from = 0, to = length(corder0) - 1)
+    ri <- seq(from = 0, to = length(rorder0) - 1)
+    
+    corder <- as.double(ci)
+    rorder <- as.double(ri)
+    
+    ci <- ci[corder0]
+    ri <- ri[rorder0]
+    
+    cresult <- data.frame(
+      .ci = ci,
+      corder = corder
+    ) %>% ctx$addNamespace()
+    
+    rresult <- data.frame(
+      .ri = ri,
+      rorder = rorder
+    ) %>% ctx$addNamespace()
+    
+   result <- list(cresult, rresult)
+  }
+  result
+}
 
 
 

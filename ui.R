@@ -87,7 +87,9 @@ ui = shinyUI
                     menuItem("Axis annotation", tabName = "axann", icon = icon("th")),
                     menuItem("Palette", tabName = "palette", icon = icon("palette"))
                     
-        )
+        ),
+        tags$hr(),
+        HTML(paste("<center><h5>Click to send the ordering data to Tercen</h5>", actionButton("button", "Transform data")),"</center>")
       )
       ,
       dashboardBody(
