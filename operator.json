@@ -3,8 +3,8 @@
   "description": "Interactive heatmap operator for Tercen",
   "tags": ["template"],
   "authors": ["rdw"],
-  "urls": ["https://github.com/tercen/template_shiny_operator"],
-
+  "urls": ["https://github.com/tercen/Heatmap_Dashboard"],
+  "isViewOnly": false,
   "properties": [
 
     {
