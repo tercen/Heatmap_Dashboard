@@ -171,8 +171,6 @@ server <- shinyServer(function(input, output, session) {
         hm = getHeatmap()
         yOrder <- row_order(hm)
       }
-      print(xOrder)
-      print(yOrder)
       return(list(xorder = xOrder, yorder = yOrder))
     })
     
