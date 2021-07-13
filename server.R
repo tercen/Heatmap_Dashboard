@@ -158,17 +158,11 @@ server <- shinyServer(function(input, output, session) {
     })
 
     observeEvent(input$button, {
-      print("before disable")
       shinyjs::disable("button")
       
-      print("before ctx")
       ctx  <- getCtx(session)
-      print("before getReturnData")
       data <- getReturnData(session, Xsorted())
-      print("before check")
       if (!is.null(data)) {
-        print("before save")
-        print(data)
         data %>% ctx$save()
       }
     })
