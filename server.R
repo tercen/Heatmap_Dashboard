@@ -110,7 +110,9 @@ server <- shinyServer(function(input, output, session) {
       }
       
       xOrder <- yOrder <- NULL
-      if (input$clusterx == "sort"){
+      if (input$clusterx == "native") {
+        xOrder <- seq(ncol(X))
+      } else if (input$clusterx == "sort") {
         xOrder = order(apply(X,2,mean))
         X = X[, xOrder]
       } else if (input$clusterx == "correlate"){
@@ -124,7 +126,9 @@ server <- shinyServer(function(input, output, session) {
         X = X[, xOrder]
       }
       
-      if (input$clustery == "sort"){
+      if (input$clustery == "native") {
+        yOrder <- seq(nrow(X))
+      } else if (input$clustery == "sort"){
         yOrder = order(apply(X,1,mean))
         X = X[yOrder,]
       } else if (input$clustery == "correlate"){
@@ -136,13 +140,12 @@ server <- shinyServer(function(input, output, session) {
         
         yOrder = order(apply(X,1, function(x) cor(x, y = df.row$vCol %>% as.factor() %>% as.numeric())))
         X = X[yOrder,]
-        
       }
       
       return(list(X = X, xorder = xOrder, yorder = yOrder))
     })
     
-    output$heatmap = renderPlot({
+    getHeatmap <- reactive({
       hm = Heatmap(Xsorted()$X, 
                    cluster_columns = input$clusterx == "cluster",
                    cluster_rows = input$clustery == "cluster",
@@ -152,16 +155,34 @@ server <- shinyServer(function(input, output, session) {
                    row_names_gp = gpar(fontsize = input$rlsize),
                    top_annotation = colAnnotation(),
                    col = colorPalette())
-      
-      hm = hm + rowAnn()
+      hm + rowAnn()
       draw(hm)
+    })
+    
+    getOrderedData <- reactive({
+      Xsorted <- Xsorted()
+      xOrder  <- Xsorted$xorder
+      yOrder  <- Xsorted$yorder
+      if (input$clusterx == "cluster") {
+        hm = getHeatmap()
+        xOrder <- column_order(hm)
+      }
+      if (input$clustery == "cluster") {
+        hm = getHeatmap()
+        yOrder <- row_order(hm)
+      }
+      return(list(xorder = xOrder, yorder = yOrder))
+    })
+    
+    output$heatmap = renderPlot({
+      getHeatmap()
     })
 
     observeEvent(input$button, {
       shinyjs::disable("button")
       
       ctx  <- getCtx(session)
-      data <- getReturnData(session, Xsorted())
+      data <- getReturnData(session, getOrderedData())
       if (!is.null(data)) {
         data %>% ctx$save()
       }
@@ -211,11 +232,11 @@ cmaps = function(type, n = 64){
   return(c)
 }
 
-getReturnData <- function(session, sorted_data) {
+getReturnData <- function(session, ordered_data) {
   result  <- NULL
   ctx     <- getCtx(session)
-  corder0 <- sorted_data$xorder 
-  rorder0 <- sorted_data$yorder
+  corder0 <- ordered_data$xorder 
+  rorder0 <- ordered_data$yorder
   
   if (!is.null(corder0) && !is.null(rorder0)) {
     ci <- seq(from = 0, to = length(corder0) - 1)
@@ -241,7 +262,3 @@ getReturnData <- function(session, sorted_data) {
   }
   result
 }
-
-
-
-
