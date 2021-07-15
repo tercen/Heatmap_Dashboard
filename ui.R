@@ -97,6 +97,9 @@ ui = shinyUI
       ,
       dashboardBody(
         fluidRow(cp1, cp2, cp3),
+        downloadButton("downloadPlotPDF", "Download pdf"),
+        downloadButton("downloadPlotPNG", "Download png"),
+        div(style="height: 4px;"),
         uiOutput("plot")
       )
     ),
