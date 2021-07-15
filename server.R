@@ -42,6 +42,14 @@ server <- shinyServer(function(input, output, session) {
       summarise(xMin = quantile(.y, q[1]), xMax = quantile(.y, q[2]))
   })
   
+  output$plot <- renderUI({
+    plotOutput(
+      "heatmap",
+      height = input$plotHeight,
+      width = input$plotWidth
+    )
+  }) 
+  
   observe({
     
     cdf = colData() %>% as.data.frame()
