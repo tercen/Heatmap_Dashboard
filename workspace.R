@@ -1,11 +1,3 @@
-library(shiny)
-library(tercen)
-library(dplyr)
-library(tidyr)
-
-
-############################################
-
 source("ui.R")
 source("server.R")
 

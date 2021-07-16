@@ -1,4 +1,4 @@
-# Template Shiny operator for Tercen
+# Heatmap Dashboard
 
 ##### Description
 
@@ -18,7 +18,9 @@ Input projection|.
 
 Output relations|.
 ---|---
-`Operator view`        | view of the Shiny application
+`Operator view` | view of the Shiny application
+`corder`        | col order
+`rorder`        | row order
 
 ##### Details
 

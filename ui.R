@@ -89,14 +89,18 @@ ui = shinyUI
                     
         ),
         tags$hr(),
+        sliderInput("plotWidth", "Plot width (px)", 200, 2000, 1200),
+        sliderInput("plotHeight", "Plot height (px)", 200, 2000, 800),
+        tags$hr(),
         HTML(paste("<center><h5>Click to send the ordering data to Tercen</h5>", actionButton("button", "Transform data")),"</center>")
       )
       ,
       dashboardBody(
         fluidRow(cp1, cp2, cp3),
-        plotOutput("heatmap",height = "600px")
-        
-        
+        downloadButton("downloadPlotPDF", "Download pdf"),
+        downloadButton("downloadPlotPNG", "Download png"),
+        div(style="height: 4px;"),
+        uiOutput("plot")
       )
     ),
     shinyjs::useShinyjs(),

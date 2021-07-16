@@ -42,6 +42,14 @@ server <- shinyServer(function(input, output, session) {
       summarise(xMin = quantile(.y, q[1]), xMax = quantile(.y, q[2]))
   })
   
+  output$plot <- renderUI({
+    plotOutput(
+      "heatmap",
+      height = input$plotHeight,
+      width = input$plotWidth
+    )
+  }) 
+  
   observe({
     
     cdf = colData() %>% as.data.frame()
@@ -187,6 +195,35 @@ server <- shinyServer(function(input, output, session) {
         data %>% ctx$save()
       }
     })
+    
+    output$downloadPlotPDF <- downloadHandler(filename <- function() {
+      paste("Heatmap_", Sys.time(), ".pdf", sep = "")
+    },
+    content <- function(file) {
+      pdf(file,
+          width = input$plotWidth / 72,
+          height = input$plotHeight / 72)
+      print(getHeatmap())
+      dev.off()
+    },
+    contentType = "application/pdf" # MIME type of the image
+    )
+    
+    output$downloadPlotPNG <- downloadHandler(filename <- function() {
+      paste("Heatmap_", Sys.time(), ".png", sep = "")
+    },
+    content <- function(file) {
+      png(
+        file,
+        width = input$plotWidth * 4,
+        height = input$plotHeight * 4,
+        res = 300
+      )
+      print(getHeatmap())
+      dev.off()
+    },
+    contentType = "application/png" # MIME type of the image
+    )
   })
 })
 
