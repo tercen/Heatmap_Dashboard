@@ -146,7 +146,7 @@ server <- shinyServer(function(input, output, session) {
         df.col = cdf %>%
           select(vCol = all_of(input$xannotation[1]))
         
-        yOrder = order(apply(X,1, function(x) cor(x, y = df.row$vCol %>% as.factor() %>% as.numeric())))
+        yOrder = order(apply(X,1, function(x) cor(x, y = df.col$vCol %>% as.factor() %>% as.numeric())))
         X = X[yOrder,]
       }
       
