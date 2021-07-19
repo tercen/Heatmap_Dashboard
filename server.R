@@ -70,7 +70,7 @@ server <- shinyServer(function(input, output, session) {
       if (!is.null(input$xannotation)){
         haCol = cdf %>%
           select(all_of(input$xannotation)) %>%
-          HeatmapAnnotation()
+          HeatmapAnnotation(df = .)
       } else {
         haCol  = NULL
       }
@@ -81,7 +81,7 @@ server <- shinyServer(function(input, output, session) {
       if (!is.null(input$yannotation)){
         haRow = rdf %>%
           select(all_of(input$yannotation)) %>%
-          rowAnnotation()
+          rowAnnotation(df = .)
         
       } else {
         haRow  = NULL
