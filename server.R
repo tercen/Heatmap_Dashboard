@@ -162,8 +162,7 @@ server <- shinyServer(function(input, output, session) {
                    show_row_names = input$dorlab,
                    row_names_gp = gpar(fontsize = input$rlsize),
                    top_annotation = colAnnotation(),
-                   col = colorPalette())
-      hm + rowAnn()
+                   col = colorPalette()) + rowAnn()
       draw(hm)
     })
     
