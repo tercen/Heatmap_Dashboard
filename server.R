@@ -68,9 +68,10 @@ server <- shinyServer(function(input, output, session) {
     
     colAnnotation = reactive({
       if (!is.null(input$xannotation)){
-        haCol = cdf %>%
+        idx = Xsorted()$xorder
+        haCol = cdf[idx,, drop = FALSE] %>% # make sure same sort as heatmap
           select(all_of(input$xannotation)) %>%
-          HeatmapAnnotation()
+          HeatmapAnnotation(df = .)
       } else {
         haCol  = NULL
       }
@@ -79,10 +80,10 @@ server <- shinyServer(function(input, output, session) {
     
     rowAnn = reactive({
       if (!is.null(input$yannotation)){
-        haRow = rdf %>%
-          select(all_of(input$yannotation)) %>%
-          rowAnnotation()
-        
+        idx = Xsorted()$yorder
+        haRow = rdf[idx,, drop = FALSE ] %>% # make sure same sort as heatmap
+                select(all_of(input$yannotation)) %>%
+                rowAnnotation(df = .)
       } else {
         haRow  = NULL
       }
@@ -116,9 +117,8 @@ server <- shinyServer(function(input, output, session) {
           select(str = any_of(input$rowlab))
         rownames(X) = rlab$str
       }
-      
       xOrder <- yOrder <- NULL
-      if (input$clusterx == "native") {
+      if (input$clusterx == "native" | input$clusterx == "cluster") {
         xOrder <- seq(ncol(X))
       } else if (input$clusterx == "sort") {
         xOrder = order(apply(X,2,mean))
@@ -134,7 +134,7 @@ server <- shinyServer(function(input, output, session) {
         X = X[, xOrder]
       }
       
-      if (input$clustery == "native") {
+      if (input$clustery == "native" | input$clustery == "cluster") {
         yOrder <- seq(nrow(X))
       } else if (input$clustery == "sort"){
         yOrder = order(apply(X,1,mean))
@@ -146,7 +146,7 @@ server <- shinyServer(function(input, output, session) {
         df.col = cdf %>%
           select(vCol = all_of(input$xannotation[1]))
         
-        yOrder = order(apply(X,1, function(x) cor(x, y = df.row$vCol %>% as.factor() %>% as.numeric())))
+        yOrder = order(apply(X,1, function(x) cor(x, y = df.col$vCol %>% as.factor() %>% as.numeric())))
         X = X[yOrder,]
       }
       
@@ -163,7 +163,8 @@ server <- shinyServer(function(input, output, session) {
                    row_names_gp = gpar(fontsize = input$rlsize),
                    top_annotation = colAnnotation(),
                    col = colorPalette())
-      hm + rowAnn()
+      hm = hm + rowAnn()
+      
       draw(hm)
     })
     
