@@ -35,6 +35,9 @@ server <- shinyServer(function(input, output, session) {
     getCols(session)
   })
   
+  mode = reactive({ 
+    getMode(session)
+  })
   
   xLim = reactive({
     q = getProps(session)
@@ -184,11 +187,15 @@ server <- shinyServer(function(input, output, session) {
     })
     
     output$heatmap = renderPlot({
+      m <- mode()
+      if (!is.null(m) && m == 'run'){
+        shinyjs::enable("runBtn")
+      }
       getHeatmap()
     })
 
-    observeEvent(input$button, {
-      shinyjs::disable("button")
+    observeEvent(input$runBtn, {
+      shinyjs::disable("runBtn")
       
       ctx  <- getCtx(session)
       data <- getReturnData(session, getOrderedData())
@@ -227,6 +234,11 @@ server <- shinyServer(function(input, output, session) {
     )
   })
 })
+
+getMode <- function(session){
+  query <- parseQueryString(session$clientData$url_search)
+  return(query[["mode"]])
+}
 
 getValues <- function(session){
   ctx <- getCtx(session)
