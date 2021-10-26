@@ -127,7 +127,7 @@ server <- shinyServer(function(input, output, session) {
         xOrder = order(apply(X,2,mean))
         X = X[, xOrder]
       } else if (input$clusterx == "correlate"){
-        if (is.null(rowAnn())){
+        if (is.null(input$yannotation)){
           stop("A row annotation is required when using correlate as ordering method for columns.")
         }
         df.row = rdf %>%
@@ -143,7 +143,7 @@ server <- shinyServer(function(input, output, session) {
         yOrder = order(apply(X,1,mean))
         X = X[yOrder,]
       } else if (input$clustery == "correlate"){
-        if(is.null(colAnnotation())){
+        if (is.null(input$xannotation)){
           stop("A column annotation is required when using correlate as ordering method for rows.")
         }
         df.col = cdf %>%
