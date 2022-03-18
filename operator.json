@@ -4,6 +4,8 @@
   "tags": ["heatmap", "pamgene"],
   "authors": ["rdw"],
   "urls": ["https://github.com/tercen/Heatmap_Dashboard"],
+  "container": "tercen/heatmap_dashboard:latest",
+  "isWebApp": true,
   "isViewOnly": false,
   "properties": [
 
