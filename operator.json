@@ -3,8 +3,8 @@
   "description": "Interactive heatmap operator for Tercen",
   "tags": ["heatmap", "pamgene"],
   "authors": ["rdw"],
-  "urls": ["https://github.com/tercen/Heatmap_Dashboard"],
-  "container": "tercen/heatmap_dashboard:latest",
+  "urls": ["https://github.com/tercen/heatmap_dashboard_operator"],
+  "container": "tercen/heatmap_dashboard_operator:latest",
   "isWebApp": true,
   "isViewOnly": false,
   "properties": [
