@@ -1,6 +1,6 @@
 {
-  "name": "Heatmap Dashboard",
-  "description": "Interactive heatmap operator for Tercen",
+  "name": "Heatmap",
+  "description": "Represents data as a clustered heatmap using a web application.",
   "tags": [
     "data visualisation",
     "plot"
