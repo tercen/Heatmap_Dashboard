@@ -1,25 +1,31 @@
 {
   "name": "Heatmap Dashboard",
   "description": "Interactive heatmap operator for Tercen",
-  "tags": ["heatmap", "pamgene"],
-  "authors": ["rdw"],
-  "urls": ["https://github.com/tercen/heatmap_dashboard_operator"],
+  "tags": [
+    "data visualisation",
+    "plot"
+  ],
+  "authors": [
+    "rdw"
+  ],
+  "urls": [
+    "https://github.com/tercen/heatmap_dashboard_operator"
+  ],
   "container": "tercen/heatmap_dashboard_operator:0.3.0",
   "isWebApp": true,
   "isViewOnly": false,
   "properties": [
-
     {
-    "kind": "DoubleProperty",
-    "name": "qMin",
-    "defaultValue": 0.01,
-    "description": "Quantile for default lower scale limit"
+      "kind": "DoubleProperty",
+      "name": "qMin",
+      "defaultValue": 0.01,
+      "description": "Quantile for default lower scale limit"
     },
     {
-    "kind": "DoubleProperty",
-    "name": "qMax",
-    "defaultValue": 0.99,
-    "description": "Quantile for default upper scale limit"
-    }  
+      "kind": "DoubleProperty",
+      "name": "qMax",
+      "defaultValue": 0.99,
+      "description": "Quantile for default upper scale limit"
+    }
   ]
 }
